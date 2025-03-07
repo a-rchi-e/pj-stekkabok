@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { getAllRooms, getAvailableRooms } from '../helper_funcs'
-import Form from './rooms_&_payment/Form';
-import List from './rooms_&_payment/List';
+import { getAllRooms, getAvailableRooms } from '../../helper_funcs'
+import Form from './rooms/Form';
+import List from './rooms/List';
 import './Bookings.css';
 
 function Bookings () {
