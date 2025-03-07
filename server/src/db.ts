@@ -1,6 +1,6 @@
 'use strict';
 
-const database: Array<Object> = [
+const database = [
    {
     name: 'Room 1',
     prod_id: 'prod_RsICHJo7xtpIYR',

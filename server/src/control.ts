@@ -2,15 +2,18 @@
 import { Request, Response } from 'express';
 import database from './db';
 import dotenv from 'dotenv';
+import {Room} from './interfaces';
+import {CheckoutReq} from './interfaces';
+import { Booking } from './interfaces';
 
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 // retrieve all rooms
-async function getAll(database: Array<Object>, req: Request, res: Response) {
+ function getAll(database:Room[], req: Request, res: Response) {
   try {
-    const allRooms = await res.json({database});
-    if(!res.ok) {
+    const allRooms =  res.json({database});
+    if(!res.status.ok) {
       throw new Error ('error retrieving all the rooms from the database')
     }
     return allRooms;
@@ -22,11 +25,11 @@ async function getAll(database: Array<Object>, req: Request, res: Response) {
 }
 
 // filter rooms by number of guests and availability
-function getFiltered(database: Array<Object>, req: Request, res: Response) {
-  const filteredByBeds = database.filter(room => room.beds >= req.body.beds);
+function getFiltered( database: Room[], req: Booking, res: Response) {
+  const filteredByBeds = database.filter(room => room.beds >= req.beds);
   const filteredByDates = filteredByBeds.filter(room => {
     for (let i = 0; i < room.booked.length; i++) {
-      if (req.body.days.includes(room.booked[i])) return false;
+      if (req.days.includes(room.booked[i])) return false;
     }
     return true;
   })
