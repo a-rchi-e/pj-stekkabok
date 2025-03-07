@@ -1,35 +1,22 @@
 'use strict';
 import { Request, Response } from 'express';
-import database from './db';
+import database from './db'; // Reference to DB aka a array
 import dotenv from 'dotenv';
-import {Room} from './interfaces';
-import {CheckoutReq} from './interfaces';
-import { Booking } from './interfaces';
 
 dotenv.config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 // retrieve all rooms
- function getAll(database:Room[], req: Request, res: Response) {
-  try {
-    const allRooms =  res.json({database});
-    if(!res.status.ok) {
-      throw new Error ('error retrieving all the rooms from the database')
-    }
-    return allRooms;
-
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({error: error})
-  }
+export function getAll(req: Request, res: Response) {
+  res.status(200).json(database); // Response to client
+  return;
 }
-
-// filter rooms by number of guests and availability
-function getFiltered( database: Room[], req: Booking, res: Response) {
-  const filteredByBeds = database.filter(room => room.beds >= req.beds);
+// filter rooms by number of guests and availability 
+export function getFiltered(req: Request, res: Response) {
+  const filteredByBeds = database.filter(room => room.beds >= req.body.beds);
   const filteredByDates = filteredByBeds.filter(room => {
     for (let i = 0; i < room.booked.length; i++) {
-      if (req.days.includes(room.booked[i])) return false;
+      if (req.body.includes(room.booked[i])) return false;
     }
     return true;
   })
@@ -37,7 +24,7 @@ function getFiltered( database: Room[], req: Booking, res: Response) {
 }
 
 // create a stripe checkout session
-async function checkOut(req: Request, res: Response) {
+export async function checkOut(req: Request, res: Response) {
   const { prod_id, price, nights, days } = req.body;
   try {
     const session = await stripe.checkout.sessions.create({
@@ -69,7 +56,7 @@ async function checkOut(req: Request, res: Response) {
 }
 
 // update room availability
-function updateAvail(req: Request, res: Request) {
+export function updateAvail(req: Request, res: Response) {
   const event = req.body;
   res.status(200).end();
   if (event.type === 'checkout.session.completed') {
@@ -84,5 +71,3 @@ function updateAvail(req: Request, res: Request) {
     }
   }
 }
-
-export default { getAll, getFiltered, checkOut, updateAvail };

@@ -7,15 +7,15 @@ interface Room {
     desc: string,
     booked: number[],
     imgPath: string
-  }
-  
-  interface Booking {
+}
+
+interface Booking {
     beds: number,
     days: number[]
-  }
-  
-  interface CheckoutReq {
-    clientSecret: string
-  }
+}
 
-  export { Room, Booking, CheckoutReq};
+interface CheckoutReq {
+    clientSecret: string
+}
+
+export { Room, Booking, CheckoutReq };
