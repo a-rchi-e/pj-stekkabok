@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { toOrdinal } from '../../helper_funcs';
+import { Booking } from '../../interfaces';
 import './Form.css';
 
-function Form ({checkAvailRooms, warning}) {
+function Form ({checkAvailRooms, warning}: {checkAvailRooms: (request: Booking) => void, warning: boolean}) {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [guests, setGuests] = useState(1);
 
-  function handleSubmit (event) {
+  function handleSubmit (event: { preventDefault: () => void; }) {
     event.preventDefault();
 
     // creating the 'days' property of the booking request
@@ -21,7 +22,7 @@ function Form ({checkAvailRooms, warning}) {
     
     // building the booking request
     const bookingRequest = {
-      sleeps: parseInt(guests),
+      sleeps: guests,
       days: arrayOfDays,
     }
 
@@ -46,7 +47,7 @@ function Form ({checkAvailRooms, warning}) {
           <div className='fields'>
             <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)}/>
             <input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)}/>
-            <input type="number" value={guests} onChange={(event) => setGuests(event.target.value)} placeholder='2' />
+            <input type="number" value={guests} onChange={(event) => setGuests(parseInt(event.target.value))} placeholder='2' />
           </div>
 
         </div>

@@ -13,7 +13,7 @@ function Payment () {
 
   useEffect( () => {
       requestCheckout({name, prod_id, price, days, nights}).then( secret => {
-        setClientSecret(secret);
+        setClientSecret(secret || '');
       }) }, []);
 
   return (

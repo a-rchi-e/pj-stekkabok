@@ -25,7 +25,7 @@ function App () {
           <Route path='/payment' element={<Payment/>}/>
           <Route path='/thanks' element={<Thanks/>}/>
         </Routes>
-        <NavBar className="navbar"/>
+        <NavBar />
       </Router>
     </>
   )

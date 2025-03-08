@@ -1,12 +1,21 @@
 
-interface Room {
+interface RoomProps {
     name: string,
     prod_id: string,
-    sleeps: number,
+    imgPath: string,
     price: number,
     desc: string,
-    booked: number[],
-    imgPath: string
+    sleeps: number,
+    days: number,
+    triggerWarning: () => void
+}
+
+interface RoomData {
+    name: string, 
+    prod_id: string,
+    price: number,
+    days: number, 
+    nights: number
 }
 
 interface Booking {
@@ -18,4 +27,10 @@ interface CheckoutReq {
     clientSecret: string
 }
 
-export { Room, Booking, CheckoutReq }
+interface ListProps {
+    availableRooms: RoomProps[],
+    days: number,
+    triggerWarning: () => void
+}
+
+export { RoomProps, RoomData, Booking, CheckoutReq, ListProps }

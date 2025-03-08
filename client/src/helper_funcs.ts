@@ -1,7 +1,7 @@
 // ------- HELPER FUNCTIONS -------
 
 import { DateTime } from 'luxon';
-import { Room, Booking, CheckoutReq }from './interfaces'
+import { Room, RoomData, Booking, CheckoutReq }from './interfaces'
 
 
 // turn a date into an ordinal
@@ -39,7 +39,7 @@ async function getAvailableRooms (request: Booking): Promise<Room[] | undefined>
 }
 
 // send stripe checkout request
-async function requestCheckout (roomData: Room): Promise<string | undefined> {
+async function requestCheckout (roomData: RoomData): Promise<string | undefined> {
   try {
     const response = await fetch('http://localhost:3000/create-checkout-session',
       {method: 'POST', body: JSON.stringify(roomData), headers: {"Content-Type": "application/json"}});
