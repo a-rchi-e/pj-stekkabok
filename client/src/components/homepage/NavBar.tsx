@@ -3,7 +3,7 @@ import './NavBar.css'
 
 function NavBar () {
 
-  const isThanks = useLocation().pathname === '/thanks';
+  const isThanks: boolean = useLocation().pathname === '/thanks';
   
   return (
     <nav className= {isThanks ? 'navbar-thanks' : 'navbar'}>
