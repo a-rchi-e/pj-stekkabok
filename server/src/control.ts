@@ -1,22 +1,22 @@
 'use strict';
+import { Request, Response } from 'express';
+import database from './db'; // Reference to DB aka a array
+import dotenv from 'dotenv';
 
-const dotenv = require('dotenv');
 dotenv.config();
-
-const db = require('./db');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 // retrieve all rooms
-function getAll (req, res) {
-  res.json(db);
+export function getAll(req: Request, res: Response) {
+  res.status(200).json(database); // Response to client
+  return;
 }
-
-// filter rooms by number of guests and availability
-function getFiltered (req, res) {
-  const filteredByGuests = db.filter( room => room.sleeps >= req.body.sleeps);
-  const filteredByDates = filteredByGuests.filter( room => {
-    for (let i=0; i<room.booked.length; i++) {
-      if (req.body.days.includes(room.booked[i])) return false;
+// filter rooms by number of guests and availability 
+export function getFiltered(req: Request, res: Response) {
+  const filteredByBeds = database.filter(room => room.beds >= req.body.beds);
+  const filteredByDates = filteredByBeds.filter(room => {
+    for (let i = 0; i < room.booked.length; i++) {
+      if (req.body.includes(room.booked[i])) return false;
     }
     return true;
   })
@@ -24,7 +24,7 @@ function getFiltered (req, res) {
 }
 
 // create a stripe checkout session
-async function checkOut (req, res) {
+export async function checkOut(req: Request, res: Response) {
   const { prod_id, price, nights, days } = req.body;
   try {
     const session = await stripe.checkout.sessions.create({
@@ -48,7 +48,7 @@ async function checkOut (req, res) {
       },
       return_url: 'http://localhost:5173/thanks',
     });
-    res.status(201).json({clientSecret: session.client_secret});
+    res.status(201).json({ clientSecret: session.client_secret });
   }
   catch (err) {
     console.log(err);
@@ -56,20 +56,18 @@ async function checkOut (req, res) {
 }
 
 // update room availability
-function updateAvail (req, res) {
+export function updateAvail(req: Request, res: Response) {
   const event = req.body;
   res.status(200).end();
   if (event.type === 'checkout.session.completed') {
     // grab custom metadata from session
     let { prod_id, daysBooked } = event.data.object.metadata;
     daysBooked = JSON.parse(daysBooked);
-    for (let i=0; i<db.length; i++ ) {
+    for (let i = 0; i < database.length; i++) {
       // find the booked room and add new booked days to array
-      if (db[i].prod_id === prod_id) {
-        db[i].booked = [...db[i].booked, ...daysBooked];
+      if (database[i].prod_id === prod_id) {
+        database[i].booked = [...database[i].booked, ...daysBooked];
       }
     }
   }
 }
-
-module.exports = { getAll, getFiltered, checkOut, updateAvail };
