@@ -1,7 +1,7 @@
 // ------- HELPER FUNCTIONS -------
 
 import { DateTime } from 'luxon';
-import { Room, RoomData, Booking, CheckoutReq }from './interfaces'
+import { RoomProps, RoomData, Booking, CheckoutReq }from './interfaces'
 
 
 // turn a date into an ordinal
@@ -11,12 +11,12 @@ function toOrdinal(date: string): number {
 }
 
 // retrieve all rooms
-async function getAllRooms(): Promise<Room[] | undefined> {
+async function getAllRooms(): Promise<RoomProps[] | undefined> {
   try {
     const response = await fetch('http://localhost:3000/rooms',
       {method: 'GET', headers: {"Content-Type": "application/json"}});
     if (!response.ok) throw new Error ('error retrieving room list.');
-    const rooms: Room[] = await response.json();
+    const rooms: RoomProps[] = await response.json();
     return rooms;
   }
   catch (err) {
@@ -25,12 +25,12 @@ async function getAllRooms(): Promise<Room[] | undefined> {
 }
 
 // retrieve available rooms
-async function getAvailableRooms (request: Booking): Promise<Room[] | undefined> {
+async function getAvailableRooms (request: Booking): Promise<RoomProps[] | undefined> {
   try {
     const response = await fetch('http://localhost:3000/rooms',
       {method: 'POST', body: JSON.stringify(request), headers: {"Content-Type": "application/json"}});
     if (!response.ok) throw new Error ('error retrieving room list.');
-    const rooms: Room[] = await response.json();
+    const rooms: RoomProps[] = await response.json();
     return rooms;
   }
   catch (err) {

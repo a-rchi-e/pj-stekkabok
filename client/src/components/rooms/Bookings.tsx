@@ -17,7 +17,7 @@ function Bookings () {
   }, []);
 
   // check available rooms on form submission
-  async function checkAvailRooms (request: Booking) {
+  function checkAvailRooms (request: Booking) { // ToDo add async and refactor here
     getAvailableRooms(request).then( available => {
       setAvailableRooms(available || []);
       setDays(request.days.length);
