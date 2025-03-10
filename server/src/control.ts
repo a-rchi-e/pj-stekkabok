@@ -58,7 +58,7 @@ export async function checkOut(req: Request, res: Response) {
 // update room availability
 export function updateAvail(req: Request, res: Response) {
   const event = req.body;
-  res.status(200).end();
+  // res.status(200).end(); // should only send 200 if the response is okay in the update path and other codes if prod_id is not matching
   if (event.type === 'checkout.session.completed') {
     // grab custom metadata from session
     let { prod_id, daysBooked } = event.data.object.metadata;
@@ -67,7 +67,9 @@ export function updateAvail(req: Request, res: Response) {
       // find the booked room and add new booked days to array
       if (database[i].prod_id === prod_id) {
         database[i].booked = [...database[i].booked, ...daysBooked];
+        res.status(200).end();
       }
     }
   }
+  res.status(404).end();
 }
