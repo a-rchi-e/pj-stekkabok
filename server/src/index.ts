@@ -19,6 +19,7 @@ function startServer() {
     console.log(error);
   }
 }
+
 startServer();
 
-export default startServer; 
+export default app; // changed to app to avoid multiple server starts with test frameworks
