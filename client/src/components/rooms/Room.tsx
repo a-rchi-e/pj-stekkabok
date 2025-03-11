@@ -1,16 +1,17 @@
 import { NavLink } from 'react-router'
+import { RoomProps } from '../../interfaces';
 import './Room.css'
 
-function Room ({name, prod_id, image, price, desc, sleeps, days, triggerWarning}) {
+function Room ({name, prod_id, imgPath, price, desc, sleeps, days, triggerWarning}: RoomProps) {
 
-  const nights = days.length;
+  const nights = days;
   const roomData = {name, prod_id, price, days, nights};
 
   return (
     <div className='room'>
 
       <div className="image">
-        <img src={image}></img>
+        <img src={imgPath}></img>
       </div>
 
       <div className="room-info">

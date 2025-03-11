@@ -1,25 +1,26 @@
 import { useState, useEffect } from 'react'
-import { getAllRooms, getAvailableRooms } from '../helper_funcs'
-import Form from './rooms_&_payment/Form';
-import List from './rooms_&_payment/List';
+import { getAllRooms, getAvailableRooms } from '../../helper_funcs'
+import { Booking, RoomProps } from '../../interfaces';
+import Form from './Form';
+import List from './List';
 import './Bookings.css';
 
 function Bookings () {
 
-  const [availableRooms, setAvailableRooms] = useState([]);
+  const [availableRooms, setAvailableRooms] = useState<RoomProps[]>([]);
   const [days, setDays] = useState(0);
   const [warning, setWarning] = useState(false);
 
   // loading all rooms on first render
   useEffect( () => {
-    getAllRooms().then( all => setAvailableRooms(all));
+    getAllRooms().then( all => setAvailableRooms(all || []));
   }, []);
 
   // check available rooms on form submission
-  async function checkAvailRooms (request) {
+  function checkAvailRooms (request: Booking) { // ToDo add async and refactor here
     getAvailableRooms(request).then( available => {
-      setAvailableRooms(available);
-      setDays(request.days);
+      setAvailableRooms(available || []);
+      setDays(request.days.length);
     if (warning && request.days.length) setWarning(false);
     });
   }
