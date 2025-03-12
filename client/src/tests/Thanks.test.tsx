@@ -10,4 +10,4 @@ describe('Thanks', () => {
     expect(screen.getByText('We look forward to welcoming you!')).toBeInTheDocument();
     screen.debug();
   })
-})
+});

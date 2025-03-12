@@ -10,7 +10,6 @@ describe('NavBar', () => {
             <NavBar />
         </BrowserRouter>
     )
-    
     screen.debug();
   })
 })
