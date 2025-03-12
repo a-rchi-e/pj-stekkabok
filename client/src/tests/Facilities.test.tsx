@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import Facilities from './Facilities'
+import Facilities from '../components/navpages/Facilities'
 
 describe('Facilities', () => {
-  it('renders the Facilities component', () => {
+  it('should render the Facilities component', () => {
     render(<Facilities />)
     
     expect(screen.getByText('OUR FACILITIES')).toBeInTheDocument();
