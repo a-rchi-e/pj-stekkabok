@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import NavBar from './NavBar'
+import NavBar from '../components/homepage/NavBar'
 import { BrowserRouter } from 'react-router'
 
 describe('NavBar', () => {
