@@ -1,4 +1,2 @@
-module.exports = {
-preset: 'ts-jest',
-testMatch: ['**/*.test.ts']
-}
+export const preset = 'ts-jest';
+export const testMatch = ['**/*.test.ts'];

@@ -2,6 +2,22 @@ import express from 'express';
 import request from 'supertest';
 import router from '../router';
 import db from './mockdb';
+import path from 'path';
+import dotenv from 'dotenv';
+import { getFilteredTest1, getFilteredTest2 } from './testExpectations';
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Mocking the stripe api call
+jest.mock('stripe', () => {
+    return jest.fn().mockImplementation(() => ({
+        checkout: {
+            sessions: {
+                create: jest.fn().mockResolvedValue({ client_secret: 'test_client_secret' }),
+            },
+        },
+    }));
+});
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -11,8 +27,9 @@ app.use("/", router);
 function getRandomNumber(max: number) {
     return Math.floor(Math.random() * max);
 }
+
 // testing getAll() function
-describe('testing controller', () => {
+describe('testing getAll function', () => {
     test('Status code 200 and DB in getAll response', async () => {
         const result = await request(app).get('/rooms');
         expect(result.statusCode).toBe(200);
@@ -83,4 +100,51 @@ describe('testing updateAvail function', () => {
             }
         }
     });
+});
+
+// Testing getFiltered() function
+describe('testing getFiltered() function', () => {
+    test('status code 200', async () => {
+        const result = await request(app).post('/test/rooms').send(
+            {
+                sleeps: 3,
+                days: [35, 36, 37, 38]
+            }
+        );
+        expect(result.statusCode).toBe(200);
+    });
+    test('filtered db returns accurately when days are unbooked for all rooms', async () => {
+        const result = await request(app).post('/test/rooms').send(
+            {
+                sleeps: 3,
+                days: [35, 36, 37, 38]
+            }
+        );
+        expect(result.body).toEqual(getFilteredTest1);
+    });
+    test('filtered db return accurately when days are booked for some rooms', async () => {
+        const result = await request(app).post('/test/rooms').send(
+            {
+                sleeps: 2,
+                days: [67, 68, 69, 70]
+            }
+        );
+        expect(result.body).toEqual(getFilteredTest2)
+    });
+});
+
+// Testing checkout() function
+
+describe('testing checkOut() function', () => {
+    test('checking status is 201', async () => {
+        const result = await request(app).post('/create-checkout-session').send(
+            {
+                prod_id: 'prod_RsICHJo7xtpIYR',
+                price: 2900000,
+                days: [73, 74, 75],
+                nights: 3
+              }
+        )
+        expect(result.statusCode).toBe(201)
+    })
 })

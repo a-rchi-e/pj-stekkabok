@@ -1,9 +1,11 @@
 'use strict';
 import { Request, Response } from 'express';
 import database from './db'; // Reference to DB aka a array
+import mockdb from './test/mockdb'
 import dotenv from 'dotenv';
+import path from 'path'
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 // retrieve all rooms
@@ -13,14 +15,14 @@ export function getAll(req: Request, res: Response) {
 }
 // filter rooms by number of guests and availability 
 export function getFiltered(req: Request, res: Response) {
-  const filteredByBeds = database.filter(room => room.beds >= req.body.beds);
+  const filteredByBeds = database.filter(room => room.beds >= req.body.sleeps);
   const filteredByDates = filteredByBeds.filter(room => {
     for (let i = 0; i < room.booked.length; i++) {
-      if (req.body.includes(room.booked[i])) return false;
+      if (req.body.days.includes(room.booked[i])) return false;
     }
     return true;
   })
-  res.json(filteredByDates);
+  res.status(200).json(filteredByDates);
 }
 
 // create a stripe checkout session
@@ -72,4 +74,18 @@ export function updateAvail(req: Request, res: Response) {
     }
   }
   res.status(404).end();
+}
+
+// Test functions
+
+export function testGetFiltered(req: Request, res: Response) {
+  // Using mockdb instead of the main db
+  const filteredByBeds = mockdb.filter(room => room.beds >= req.body.sleeps);
+  const filteredByDates = filteredByBeds.filter(room => {
+    for (let i = 0; i < room.booked.length; i++) {
+      if (req.body.days.includes(room.booked[i])) return false;
+    }
+    return true;
+  })
+  res.status(200).json(filteredByDates);
 }
