@@ -4,7 +4,7 @@ function Patro () {
 
   return (
     <div className="section patro">
-      <img src="sections/patro.jpg" alt="" />
+      <img src="sections/patro.jpg" alt="ship-bgimg" />
     </div>
   )
 }
